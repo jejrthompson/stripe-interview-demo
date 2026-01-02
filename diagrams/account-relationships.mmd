@@ -1,0 +1,28 @@
+flowchart TB
+    subgraph Platform["Platform Stripe Account"]
+        PA[Main Account]
+        PB[Stripe Balance]
+    end
+
+    subgraph Connected["Connected Accounts (Custom)"]
+        R[Restaurant Account<br/>acct_xxx]
+        D[Courier Account<br/>acct_yyy]
+    end
+
+    subgraph Customers["Customers"]
+        C1[Customer<br/>cus_zzz]
+    end
+
+    C1 -->|PaymentIntent| PB
+    PB -->|Transfer| R
+    PB -->|Transfer| D
+
+    PA -.->|manages| R
+    PA -.->|manages| D
+    PA -.->|owns| C1
+
+    style PA fill:#635bff,stroke:#333,color:#fff
+    style PB fill:#635bff,stroke:#333,color:#fff
+    style R fill:#4caf50,stroke:#333,color:#fff
+    style D fill:#4caf50,stroke:#333,color:#fff
+    style C1 fill:#f5f5f5,stroke:#333

@@ -1,0 +1,27 @@
+sequenceDiagram
+    autonumber
+    participant C as Customer
+    participant P as Platform
+    participant S as Stripe
+    participant R as Restaurant
+    participant D as Courier
+
+    Note over C,D: Section 2: Payment Collection
+
+    C->>P: Place order ($35)
+    P->>S: Create PaymentIntent
+    S-->>P: client_secret
+    P-->>C: Checkout UI
+    C->>S: Confirm payment (card)
+    S-->>P: payment_intent.succeeded
+
+    Note over P,S: $35 now in Platform's Stripe balance
+
+    Note over C,D: Section 3: Fund Routing
+
+    P->>S: Transfer $25 to Restaurant
+    S->>R: $25 (food cost)
+    P->>S: Transfer $7 to Courier
+    S->>D: $7 (delivery fee)
+
+    Note over P: Platform keeps $3 (service fee)
