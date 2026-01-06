@@ -4,7 +4,9 @@
       "Bash(mmdc:*)",
       "mcp__ide__executeCode",
       "WebFetch(domain:docs.stripe.com)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(chmod:*)",
+      "Bash(git add:*)"
     ]
   }
 }
