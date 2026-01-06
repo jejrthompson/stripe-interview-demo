@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(mmdc:*)"
+      "Bash(mmdc:*)",
+      "mcp__ide__executeCode",
+      "WebFetch(domain:docs.stripe.com)",
+      "WebSearch"
     ]
   }
 }
