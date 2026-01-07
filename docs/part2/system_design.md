@@ -1,12 +1,8 @@
 # Part 2: System Design - Reverse API
 
-**Scenario:** You're a PM at Maps.co (like Google Maps). You've partnered with food delivery companies (Food.co = Uber Eats/DoorDash). Users can order food directly in the Maps app. Food.co partners implement your "reverse API" - you define the contract, they host the endpoints.
-
----
-
 ## High-Level Architecture
 
-![Architecture Diagram](../diagrams/part2/architecture.png)
+![Architecture Diagram](../../diagrams/part2/architecture.png)
 
 **Two communication patterns:**
 
@@ -21,6 +17,16 @@
 
 These endpoints are **hosted by Food.co** but **defined by Maps.co**. Maps.co calls these to fetch data and trigger actions.
 
+| Endpoint | Direction | Purpose |
+|----------|-----------|---------|
+| `GET /restaurants` | Maps → Food | Browse nearby restaurants |
+| `GET /restaurants/{id}/menu` | Maps → Food | View menu |
+| `POST /orders` | Maps → Food | Place order |
+| `GET /orders/{id}` | Maps → Food | Check status |
+| `POST /orders/{id}/cancel` | Maps → Food | Cancel order |
+| `POST {webhook_url}` | Food → Maps | Push updates |
+
+
 ### 1. List Restaurants
 
 ```
@@ -32,7 +38,7 @@ GET /v1/restaurants?lat={lat}&lng={lng}&radius={radius}
 |-------|------|-------------|
 | lat | float | User latitude |
 | lng | float | User longitude |
-| radius | int | Search radius in meters |
+| radius | int | Search radius in miles |
 | cuisine | string? | Optional filter |
 
 **Response:**
@@ -74,8 +80,8 @@ GET /v1/restaurants/{restaurant_id}/menu
       "items": [
         {
           "id": "item_burger01",
-          "name": "Classic Cheeseburger",
-          "description": "Beef patty with cheese, lettuce, tomato",
+          "name": "Palace Burger",
+          "description": "Our world famous burger with tomato jam, caramelized onions, swiss cheese and house-made aioli",
           "price": 1299,
           "image_url": "https://...",
           "available": true,
@@ -275,8 +281,6 @@ POST {partner_webhook_url}
     "maps_order_id": "maps_ord_789",
     "driver": {
       "location": { "lat": 37.7820, "lng": -122.4090 },
-      "heading": 45,
-      "speed_mph": 15
     }
   }
 }
@@ -305,7 +309,7 @@ POST {partner_webhook_url}
 
 ## API Flow Diagram
 
-![API Flow](../diagrams/part2/api-flow.png)
+![API Flow](../../diagrams/part2/api-flow.png)
 
 ---
 
@@ -313,9 +317,9 @@ POST {partner_webhook_url}
 
 ### Authentication & Security
 
-- **API Keys**: Food.co authenticates to Maps.co spec using partner API keys
-- **Webhook Signatures**: Maps.co signs webhook payloads; Food.co verifies with shared secret
-- **Rate Limiting**: Maps.co enforces rate limits per partner
+- **API Keys**: Maps.co authenticates to Food.co's reverse API using partner API keys
+- **Webhook Signatures**: Food.co signs webhook payloads; Maps.co verifies with shared secret
+- **Rate Limiting**: Food.co enforces rate limits on Maps.co requests
 - **IP Allowlisting**: Optional for high-security partners
 
 ### Error Handling
@@ -344,7 +348,6 @@ Standard error response format:
 
 | Scenario | Handling |
 |----------|----------|
-| Restaurant closes mid-order | Food.co sends `order.issue_reported` webhook |
 | Driver no-show | Food.co reassigns or cancels with refund |
 | Payment failure | Maps.co handles; order creation fails |
 | Partial availability | Return `available: false` on menu items |
@@ -359,16 +362,3 @@ Standard error response format:
 - API version in URL path (`/v1/`, `/v2/`)
 - Breaking changes require new version
 - Deprecation notice 6 months before sunset
-
----
-
-## Quick Reference
-
-| Endpoint | Direction | Purpose |
-|----------|-----------|---------|
-| `GET /restaurants` | Maps → Food | Browse nearby restaurants |
-| `GET /restaurants/{id}/menu` | Maps → Food | View menu |
-| `POST /orders` | Maps → Food | Place order |
-| `GET /orders/{id}` | Maps → Food | Check status |
-| `POST /orders/{id}/cancel` | Maps → Food | Cancel order |
-| `POST {webhook_url}` | Food → Maps | Push updates |

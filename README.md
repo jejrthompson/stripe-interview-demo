@@ -38,9 +38,9 @@ stripe-sa-prep/
 ├── .env.example
 ├── .gitignore
 ├── notebooks/
-│   └── part1_stripe_connect.ipynb    # On-demand delivery with Connect
+│   └── part1/stripe_connect.ipynb    # On-demand delivery with Connect
 ├── docs/
-│   └── part2_system_design.md        # Maps.co reverse API design
+│   └── part2/system_design.md        # Maps.co reverse API design
 └── diagrams/
     ├── part1/                        # Connect flow diagrams
     └── part2/                        # System design diagrams
