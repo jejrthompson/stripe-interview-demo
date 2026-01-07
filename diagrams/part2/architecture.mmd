@@ -1,0 +1,39 @@
+flowchart TB
+    subgraph MapsApp["Maps.co App"]
+        UI[User Interface]
+        MB[Maps Backend]
+    end
+
+    subgraph MapsAPI["Maps.co Partner API"]
+        WH[Webhook Endpoints]
+        PP[Partner Portal]
+    end
+
+    subgraph FoodCo["Food.co (Partner)"]
+        FA[Food.co API<br/>Reverse API Implementation]
+        FDB[(Orders DB)]
+        DR[Driver Network]
+        REST[Restaurant Network]
+    end
+
+    UI -->|user actions| MB
+    MB -->|"GET /restaurants<br/>GET /menu<br/>POST /orders"| FA
+    FA -->|responses| MB
+    FA --> FDB
+    FA --> DR
+    FA --> REST
+
+    FA -->|"order.status_updated<br/>driver.location_updated"| WH
+    WH -->|push to app| MB
+    MB -->|real-time updates| UI
+
+    PP -.->|"API keys<br/>webhook config"| FA
+
+    style UI fill:#4285f4,stroke:#333,color:#fff
+    style MB fill:#4285f4,stroke:#333,color:#fff
+    style WH fill:#4285f4,stroke:#333,color:#fff
+    style PP fill:#4285f4,stroke:#333,color:#fff
+    style FA fill:#ea4335,stroke:#333,color:#fff
+    style FDB fill:#ea4335,stroke:#333,color:#fff
+    style DR fill:#fbbc04,stroke:#333,color:#000
+    style REST fill:#34a853,stroke:#333,color:#fff

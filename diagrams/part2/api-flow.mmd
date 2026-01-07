@@ -1,0 +1,40 @@
+sequenceDiagram
+    autonumber
+    participant U as User
+    participant M as Maps.co
+    participant F as Food.co
+
+    Note over U,F: Discovery & Browsing
+
+    U->>M: Open food ordering
+    M->>F: GET /restaurants?lat=...&lng=...
+    F-->>M: Restaurant list
+    M-->>U: Show nearby restaurants
+
+    U->>M: Select restaurant
+    M->>F: GET /restaurants/{id}/menu
+    F-->>M: Menu with items
+    M-->>U: Display menu
+
+    Note over U,F: Order Placement
+
+    U->>M: Add items, checkout
+    M->>F: POST /orders
+    F-->>M: Order confirmed
+    M-->>U: Order confirmation
+
+    Note over U,F: Real-time Tracking (Webhooks)
+
+    F->>M: webhook: order.status_updated (preparing)
+    M-->>U: Push notification
+
+    F->>M: webhook: order.status_updated (in_transit)
+    M-->>U: Show driver on map
+
+    loop Every 30 seconds
+        F->>M: webhook: driver.location_updated
+        M-->>U: Update driver position
+    end
+
+    F->>M: webhook: order.status_updated (delivered)
+    M-->>U: Order complete

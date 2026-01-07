@@ -38,10 +38,12 @@ stripe-sa-prep/
 ├── .env.example
 ├── .gitignore
 ├── notebooks/
-│   ├── part1_stripe_connect.ipynb    # On-demand delivery with Connect
-│   └── part2_system_design.ipynb     # Maps.co reverse API design
+│   └── part1_stripe_connect.ipynb    # On-demand delivery with Connect
+├── docs/
+│   └── part2_system_design.md        # Maps.co reverse API design
 └── diagrams/
-    └── (exported diagrams go here)
+    ├── part1/                        # Connect flow diagrams
+    └── part2/                        # System design diagrams
 ```
 
 ---
@@ -91,20 +93,15 @@ Platform Stripe Balance ($35.00)
 
 ## Part 2: System Design - Reverse API (20 min)
 
-**Scenario:** You're a PM at Maps.co (like Google Maps). You've partnered with food delivery companies (Food.co = Uber Eats/DoorDash). Users can order food directly in the Maps app. Food.co partners will implement your "reverse API" - you make requests, they handle them.
+**Full spec:** [docs/part2_system_design.md](docs/part2_system_design.md)
 
-### General Flow
-
-1. Select a restaurant
-2. View menu and select/customize items
-3. Make the order
-4. Track the order
+**Scenario:** You're a PM at Maps.co (like Google Maps). You've partnered with food delivery companies (Food.co = Uber Eats/DoorDash). Users can order food directly in the Maps app. Food.co partners will implement your "reverse API" - you define the contract, they host the endpoints.
 
 ### Deliverables
 
-1. **High-level architecture diagram** between Maps.co and Food.co partners
-2. **API endpoints** that Food.co must implement, including key fields in request/response for each endpoint
-3. **Additional functionality** that Maps.co might need to expose to Food.co partners (webhooks, callbacks, etc.)
+1. **High-level architecture diagram** - Maps.co ↔ Food.co communication patterns
+2. **Reverse API endpoints** - What Food.co must implement (restaurants, menu, orders)
+3. **Webhooks** - What Maps.co exposes for async updates (order status, driver location)
 
 ---
 
